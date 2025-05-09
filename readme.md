@@ -1,0 +1,3 @@
+```
+sub --domain test.com
+```
