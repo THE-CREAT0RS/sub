@@ -55,6 +55,11 @@ func main() {
 	flag.Parse()
 
 	args := flag.Args()
+	if len(args) < 1 {
+		flag.Usage()
+		return
+	}
+
 	switch args[0] {
 	case "reverse":
 		if len(args) < 2 {
