@@ -1,4 +1,4 @@
-module github.com/the-creat0rs/sub
+module github.com/THE-CREAT0RS/sub
 
 go 1.23.0
 
