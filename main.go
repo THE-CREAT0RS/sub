@@ -55,34 +55,8 @@ func main() {
 	flag.Parse()
 
 	args := flag.Args()
+	// common dns lookup: default, no command execution
 	if len(args) < 1 {
-		flag.Usage()
-		return
-	}
-
-	switch args[0] {
-	case "reverse":
-		if len(args) < 2 {
-			fmt.Printf("Usage of `sub reverse`: sub reverse <ip>\n\n")
-			return
-		}
-		ip := args[1]
-		resolver := &net.Resolver{}
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-		names, err := resolver.LookupAddr(ctx, ip)
-
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error en reverse lookup: %v\n", err)
-			os.Exit(1)
-		}
-		fmt.Printf("\nhostnames for %s:\n", ip)
-		for _, name := range names {
-			fmt.Println("  ", name)
-		}
-		println()
-
-	default:
 		if *domain == "" {
 			fmt.Fprintln(os.Stderr, "Error: --domain flag is required")
 			flag.Usage()
@@ -115,5 +89,35 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Println(string(out))
+		return
+	}
+
+	// commands execution
+	switch args[0] {
+	case "reverse":
+		if len(args) < 2 {
+			fmt.Printf("Usage of `sub reverse`: sub reverse <ip>\n\n")
+			return
+		}
+		ip := args[1]
+		resolver := &net.Resolver{}
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		names, err := resolver.LookupAddr(ctx, ip)
+
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error en reverse lookup: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("\nhostnames for %s:\n", ip)
+		for _, name := range names {
+			fmt.Println("  ", name)
+		}
+		println()
+
+	default:
+		println("\nUnknown sub command")
+		flag.Usage()
+		return
 	}
 }
